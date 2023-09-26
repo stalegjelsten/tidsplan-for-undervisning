@@ -40,11 +40,11 @@
 
 	function getPositionOfScrollbar(tidsplanHeight, startTime, endTime) {
 		let now = new Date();
-		if (now < endTime && now > startTime) {
+		if (now < endTime && now > startTime && browser) {
 			// shows the scrollbar if the lesson is in progress
 			const amountDone = (now - startTime) / (endTime - startTime);
-			return Math.round(amountDone * tidsplanHeight);
 			document.getElementById('scrollbar').style.visibility = 'visible';
+			return Math.round(amountDone * tidsplanHeight);
 		}
 	}
 </script>
