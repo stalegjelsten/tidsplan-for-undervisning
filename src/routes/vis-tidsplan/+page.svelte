@@ -1,42 +1,7 @@
 <script>
 	import { browser } from '$app/environment';
+	import { tidsplan_inndata } from '../../stores';
 
-	let tidsplan_inndata = {
-		tema: 'Derivasjon',
-		laeringsmaal: ['repetere derivasjonsreglene', 'utforske sammensatte funksjoner'],
-		tidsplan: [
-			{
-				id: '1',
-				startkl: '09.55',
-				sluttkl: '10.15',
-				andel: 17,
-				innhold: 'Repetisjon av derviasjon fra S1/1T'
-			},
-			{
-				id: '2',
-				startkl: '10.20',
-				sluttkl: '10.40',
-				andel: 22,
-				innhold: 'Oppgave 2.10–2.13 + 2.205'
-			},
-			{ id: '3', startkl: '10.40', sluttkl: '10.47', andel: 11, innhold: 'Pause' },
-			{
-				id: '4',
-				startkl: '10.47',
-				sluttkl: '11.00',
-				andel: 22,
-				innhold: 'Oppgave 2.10–2.13 + 2.205'
-			},
-			{
-				id: '5',
-				startkl: '11.00',
-				sluttkl: '11.20',
-				andel: 17,
-				innhold: 'Utforsk sammensatte funksjoner s. 65'
-			},
-			{ id: '6', startkl: '11.20', sluttkl: '11.27', andel: 17, innhold: 'Leksearbeid' }
-		]
-	};
 	const colors = [
 		'e0c3fc',
 		'ddbdfc',
@@ -51,16 +16,16 @@
 	];
 
 	let myStart = new Date();
-	myStart.setHours(Number(tidsplan_inndata.tidsplan[0].startkl.slice(0, 2)));
-	myStart.setMinutes(Number(tidsplan_inndata.tidsplan[0].startkl.slice(3, 5)));
+	myStart.setHours(Number($tidsplan_inndata.tidsplan[0].startkl.slice(0, 2)));
+	myStart.setMinutes(Number($tidsplan_inndata.tidsplan[0].startkl.slice(3, 5)));
 	myStart.setSeconds(0);
 
 	let end = new Date();
 	end.setHours(
-		Number(tidsplan_inndata.tidsplan[tidsplan_inndata.tidsplan.length - 1].sluttkl.slice(0, 2))
+		Number($tidsplan_inndata.tidsplan[$tidsplan_inndata.tidsplan.length - 1].sluttkl.slice(0, 2))
 	);
 	end.setMinutes(
-		Number(tidsplan_inndata.tidsplan[tidsplan_inndata.tidsplan.length - 1].sluttkl.slice(3, 5))
+		Number($tidsplan_inndata.tidsplan[$tidsplan_inndata.tidsplan.length - 1].sluttkl.slice(3, 5))
 	);
 	end.setSeconds(0);
 
@@ -75,8 +40,12 @@
 
 	function getPositionOfScrollbar(tidsplanHeight, startTime, endTime) {
 		let now = new Date();
-		const amountDone = (now - startTime) / (endTime - startTime);
-		return Math.round(amountDone * tidsplanHeight);
+		if (now < endTime && now > startTime) {
+			// shows the scrollbar if the lesson is in progress
+			const amountDone = (now - startTime) / (endTime - startTime);
+			return Math.round(amountDone * tidsplanHeight);
+			document.getElementById('scrollbar').style.visibility = 'visible';
+		}
 	}
 </script>
 
@@ -91,9 +60,9 @@
 
 <div id="container">
 	<div id="laeringsmaal">
-		<h1>{tidsplan_inndata.tema}</h1>
+		<h1>{$tidsplan_inndata.tema}</h1>
 		<ul>
-			{#each tidsplan_inndata.laeringsmaal as maal}
+			{#each $tidsplan_inndata.laeringsmaal as maal}
 				<li>{maal}</li>
 			{/each}
 		</ul>
@@ -102,7 +71,7 @@
 	<h1>Tidsplan</h1>
 	<div id="tidsplan">
 		<div id="scrollbar">&nbsp;</div>
-		{#each tidsplan_inndata.tidsplan as undervisningsbolk, i}
+		{#each $tidsplan_inndata.tidsplan as undervisningsbolk, i}
 			<div
 				id={undervisningsbolk.id}
 				class="bolk"
@@ -152,7 +121,6 @@
 	.bolk {
 		z-index: 0;
 		min-height: 2rem;
-		/* outline: 2px solid red; */
 		padding: 0.5rem;
 	}
 	div#scrollbar {
@@ -161,5 +129,6 @@
 		width: 100%;
 		height: 1rem;
 		background-color: rgba(255, 0, 0, 0.5);
+		visibility: hidden;
 	}
 </style>
