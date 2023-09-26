@@ -3,18 +3,38 @@
 
 	let tidsplan_inndata = {
 		tema: 'Derivasjon',
-		laeringsmaal: [
-			'bruke universell utforming',
-			'et langt og kjedelig læringsmål',
-			'veeeellldig langt og kjedelig læringsmål som går over flere linjer'
-		],
+		laeringsmaal: ['repetere derivasjonsreglene', 'utforske sammensatte funksjoner'],
 		tidsplan: [
-			{ id: '1', startkl: '21.00', sluttkl: '12.15', andel: 17, innhold: 'Intro' },
-			{ id: '2', startkl: '12.10', sluttkl: '12.25', andel: 22, innhold: 'Oppgave' },
-			{ id: '3', startkl: '12.25', sluttkl: '12.35', andel: 11, innhold: 'egenarbeid' },
-			{ id: '4', startkl: '12.35', sluttkl: '12.55', andel: 22, innhold: 'Pause' },
-			{ id: '5', startkl: '13.00', sluttkl: '13.15', andel: 17, innhold: 'Nydelige saker' },
-			{ id: '6', startkl: '13.15', sluttkl: '23.32', andel: 17, innhold: 'oppsummering' }
+			{
+				id: '1',
+				startkl: '09.55',
+				sluttkl: '10.15',
+				andel: 17,
+				innhold: 'Repetisjon av derviasjon fra S1/1T'
+			},
+			{
+				id: '2',
+				startkl: '10.20',
+				sluttkl: '10.40',
+				andel: 22,
+				innhold: 'Oppgave 2.10–2.13 + 2.205'
+			},
+			{ id: '3', startkl: '10.40', sluttkl: '10.47', andel: 11, innhold: 'Pause' },
+			{
+				id: '4',
+				startkl: '10.47',
+				sluttkl: '11.00',
+				andel: 22,
+				innhold: 'Oppgave 2.10–2.13 + 2.205'
+			},
+			{
+				id: '5',
+				startkl: '11.00',
+				sluttkl: '11.20',
+				andel: 17,
+				innhold: 'Utforsk sammensatte funksjoner s. 65'
+			},
+			{ id: '6', startkl: '11.20', sluttkl: '11.27', andel: 17, innhold: 'Leksearbeid' }
 		]
 	};
 	const colors = [
@@ -105,7 +125,7 @@
 		height: 100%;
 		margin: 0;
 		font-family: 'Josefin Sans', Arial, Helvetica, sans-serif;
-		font-size: 250%;
+		font-size: 200%;
 	}
 	h1 {
 		padding: 0.5rem;
