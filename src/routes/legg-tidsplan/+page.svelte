@@ -35,9 +35,10 @@
 	let placeHolderTidsplan = formatTidsplan($tidsplan_inndata.tidsplan);
 	let placeHolderTema = $tidsplan_inndata.tema;
 	let placeHolderStart = $tidsplan_inndata.tidsplan[0].startkl;
-	let placeHolderSlutt = $tidsplan_inndata.tidsplan[-1].sluttkl;
+	let placeHolderSlutt = $tidsplan_inndata.tidsplan[$tidsplan_inndata.tidsplan.length - 1].sluttkl;
 
 	const saveTidsplan = () => {
+		console.log(placeHolderLaeringsmaal.split('\n'));
 		let laeringsmaal = placeHolderLaeringsmaal.split('\n');
 		const tidsplanRawArray = placeHolderTidsplan.split('\n');
 		let nyTidsplan = [];
