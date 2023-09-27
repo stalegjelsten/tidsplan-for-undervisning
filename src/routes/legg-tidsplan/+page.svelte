@@ -98,15 +98,6 @@
 	let combinedTextarea = lagKombinertTekstfelt();
 </script>
 
-<!-- <head>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link
-		href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap"
-		rel="stylesheet"
-	/></head
-> -->
-
 <div id="container">
 	<label for="tema"> Tema:</label>
 	<input type="text" name="tema" placeholder="Tema" bind:value={placeHolderTema} />
