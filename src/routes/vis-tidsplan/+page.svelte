@@ -40,7 +40,7 @@
 			let height = document.getElementById('tidsplan').offsetHeight;
 
 			document.getElementById('scrollbar').style.marginTop =
-				getPositionOfScrollbar(height, myStart, end) - 20 + 'px';
+				getPositionOfScrollbar(height, myStart, end) + 'px';
 			//TODO: if scrollbar is on top of another div: make that div stand out.
 			// offsetTop is probably the wrong property.
 			for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
@@ -51,9 +51,11 @@
 				if (scrollbarY + 5 > boxY && scrollbarY < nextBoxY) {
 					document.getElementById(i + 1).style.fontWeight = '700';
 					document.getElementById(i + 1).style.filter = 'brightness(1.1)';
+					document.getElementById(i + 1).style.width = 'calc(100vw - 1.8rem)';
 				} else {
 					document.getElementById(i + 1).style.fontWeight = '400';
 					document.getElementById(i + 1).style.filter = 'brightness(1)';
+					document.getElementById(i + 1).style.width = 'calc(100vw - 2rem)';
 				}
 			}
 		}
