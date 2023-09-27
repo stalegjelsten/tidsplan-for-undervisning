@@ -176,11 +176,13 @@
 		font-size: 200%;
 	}
 	h1 {
-		padding: 1rem;
-		font-size: 150%;
+		/* padding: 1rem 1rem 0 1rem; */
+		font-size: 120%;
+		margin: 1rem 0.5rem 0 0.5rem;
 	}
 	#laeringsmaal ul {
 		margin: 0;
+		padding: 0 4rem;
 	}
 	div#container {
 		display: flex;
@@ -201,7 +203,7 @@
 		/* gap: 0.35rem; */
 	}
 	.bolk {
-		width: 95%;
+		width: calc(100vw - 2rem);
 		z-index: 0;
 		border: 2px solid black;
 		min-height: 2rem;
