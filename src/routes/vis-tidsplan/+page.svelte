@@ -164,6 +164,11 @@
 </div>
 
 <style>
+	@font-face {
+		font-family: 'Josefin Sans';
+		src: local('fonts/JosefinSans-VariableFont_wght'),
+			local('fonts/JosefinSans-Italic-VariableFont_wght');
+	}
 	:global(html) {
 		height: 100%;
 		margin: 0;

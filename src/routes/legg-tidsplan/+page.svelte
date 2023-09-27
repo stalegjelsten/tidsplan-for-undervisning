@@ -98,14 +98,14 @@
 	let combinedTextarea = lagKombinertTekstfelt();
 </script>
 
-<head>
+<!-- <head>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link
 		href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap"
 		rel="stylesheet"
 	/></head
->
+> -->
 
 <div id="container">
 	<label for="tema"> Tema:</label>
@@ -135,8 +135,8 @@
 		bind:value={placeHolderTidsplan}
 	/>
 	<button type="button" on:click={lagreTidsplan} name="submit tidsplan">Legg inn tidsplan!</button>
-	<p><a href="vis-tidsplan">Vis tidsplan</a></p>
 	<p>Total varighet: {totalVarighet} minutter.</p>
+	<a href="vis-tidsplan"><button>Vis tidsplan</button></a>
 
 	<label for="rawData">Rådata</label>
 	<textarea name="rawData" id="rawData" cols="30" rows="15" bind:value={combinedTextarea} />
@@ -147,6 +147,11 @@
 <div id="scrollbar" />
 
 <style>
+	@font-face {
+		font-family: 'Josefin Sans';
+		src: local('fonts/JosefinSans-VariableFont_wght.ttf'),
+			local('fonts/JosefinSans-Italic-VariableFont_wght.ttf');
+	}
 	:global(html) {
 		height: 100%;
 		margin: 0;
@@ -163,6 +168,7 @@
 		font-size: 150%;
 	}
 	div#container {
+		max-width: 50rem;
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
