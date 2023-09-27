@@ -103,15 +103,6 @@
 	};
 </script>
 
-<head>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link
-		href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap"
-		rel="stylesheet"
-	/></head
->
-
 <div id="container">
 	<div id="laeringsmaal">
 		<h1><a href="legg-tidsplan">{$tidsplan_inndata.tema}</a></h1>
@@ -168,8 +159,8 @@
 <style>
 	@font-face {
 		font-family: 'Josefin Sans';
-		src: local('fonts/JosefinSans-VariableFont_wght'),
-			local('fonts/JosefinSans-Italic-VariableFont_wght');
+		src: local('fonts/JosefinSans-VariableFont_wght.ttf'),
+			local('fonts/JosefinSans-Italic-VariableFont_wght.ttf');
 	}
 	:global(html) {
 		height: 100%;
