@@ -1,6 +1,6 @@
 <script>
 	import { tidsplan_inndata } from '../../stores';
-	const formatLaeringsmaal = (inndata) => {
+	const formaterLaeringsmaal = (inndata) => {
 		let result = '';
 		for (let i = 0; i < inndata.length; i++) {
 			const element = inndata[i];
@@ -8,95 +8,94 @@
 		}
 		return result.slice(0, -1);
 	};
-	$: combinedTextarea = [
-		'tema: ' + $tidsplan_inndata.tema,
-		'læringsmål:',
-		$tidsplan_inndata.laeringsmaal.join('\n'),
-		'tidsplan:',
-		placeHolderTidsplan
-	].join('\n');
 
-	const formatTidsplan = (inndata) => {
+	let totalVarighet = 0;
+
+	const formaterTidsplan = (inndata) => {
 		let result = '';
 		for (let i = 0; i < inndata.length; i++) {
 			const element = inndata[i];
-			let starttid = new Date();
-			starttid.setHours(Number(element.startkl.slice(0, 2)));
-			starttid.setMinutes(Number(element.startkl.slice(3, 5)));
-			let sluttid = new Date();
-			sluttid.setHours(Number(element.sluttkl.slice(0, 2)));
-			sluttid.setMinutes(Number(element.sluttkl.slice(3, 5)));
-			const diff = sluttid - starttid;
-			result = result + String(Math.round(diff / 60 / 1000)) + ' ' + element.innhold + '\n';
+			result = result + element.varighet + ' ' + element.innhold + '\n';
 		}
 		return result.slice(0, -1);
 	};
-	let placeHolderLaeringsmaal = formatLaeringsmaal($tidsplan_inndata.laeringsmaal);
-	let placeHolderTidsplan = formatTidsplan($tidsplan_inndata.tidsplan);
-	let placeHolderTema = $tidsplan_inndata.tema;
-	let placeHolderStart = $tidsplan_inndata.tidsplan[0].startkl;
-	let placeHolderSlutt = $tidsplan_inndata.tidsplan[$tidsplan_inndata.tidsplan.length - 1].sluttkl;
 
-	const saveTidsplan = () => {
-		console.log(placeHolderLaeringsmaal.split('\n'));
+	let placeHolderLaeringsmaal = formaterLaeringsmaal($tidsplan_inndata.laeringsmaal);
+	let placeHolderTidsplan = formaterTidsplan($tidsplan_inndata.tidsplan);
+	let placeHolderTema = $tidsplan_inndata.tema;
+	let placeHolderStart = $tidsplan_inndata.startkl;
+
+	const lagKombinertTekstfelt = () => {
+		return [
+			'tema: ' + $tidsplan_inndata.tema,
+			'startkl: ' + $tidsplan_inndata.startkl,
+			'læringsmål:',
+			$tidsplan_inndata.laeringsmaal.join('\n'),
+			'tidsplan:',
+			placeHolderTidsplan
+		].join('\n');
+	};
+
+	const lagreTidsplan = () => {
 		let laeringsmaal = placeHolderLaeringsmaal.split('\n');
 		const tidsplanRawArray = placeHolderTidsplan.split('\n');
 		let nyTidsplan = [];
-		const startTime = new Date();
-		startTime.setHours(Number(placeHolderStart.slice(0, 2)));
-		startTime.setMinutes(Number(placeHolderStart.slice(3, 5)));
-		let sluttDato = new Date();
-		sluttDato.setHours(Number(placeHolderSlutt.slice(0, 2)));
-		sluttDato.setMinutes(Number(placeHolderSlutt.slice(3, 5)));
-		const lessonDuration = Math.round((sluttDato - startTime) / 60 / 1000);
-		sluttDato = startTime;
+		let kumulativVarighet = 0;
 		for (let i = 0; i < tidsplanRawArray.length; i++) {
 			const element = tidsplanRawArray[i];
 			const id = i + 1;
-			let minStartkl = placeHolderStart;
-			if (i > 0) {
-				minStartkl = nyTidsplan[i - 1].sluttkl;
-			}
-			let minSluttkl = placeHolderSlutt;
-			const tempStarttid = sluttDato;
-			if (i == 0) {
-				sluttDato = new Date(
-					startTime.getTime() + Number(tidsplanRawArray[0].split(' ')[0]) * 60 * 1000
-				);
-				minSluttkl =
-					('0' + String(sluttDato.getHours())).slice(-2) +
-					':' +
-					('0' + String(sluttDato.getMinutes())).slice(-2);
-			} else if (i < tidsplanRawArray.length - 1 && i > 0) {
-				sluttDato = new Date(
-					sluttDato.getTime() + Number(tidsplanRawArray[i].split(' ')[0]) * 60 * 1000
-				);
-				minSluttkl =
-					('0' + String(sluttDato.getHours())).slice(-2) +
-					':' +
-					('0' + String(sluttDato.getMinutes())).slice(-2);
-			} else {
-				sluttDato = new Date();
-				sluttDato.setHours(Number(placeHolderSlutt.slice(0, 2)));
-				sluttDato.setMinutes(Number(placeHolderSlutt.slice(3, 5)));
-			}
-			const [first, ...innholdArray] = element.split(' ');
-			const bolkDuration = Math.round((sluttDato - tempStarttid) / 60 / 1000);
-
+			const [varighet, ...innholdArray] = element.split(' ');
 			nyTidsplan.push({
 				id: String(id),
-				startkl: minStartkl,
-				sluttkl: minSluttkl,
-				andel: Math.round((bolkDuration / lessonDuration) * 100),
+				varighet: Number(varighet),
 				innhold: innholdArray.join(' ')
 			});
+			kumulativVarighet += Number(varighet);
 		}
 		tidsplan_inndata.set({
 			tema: placeHolderTema,
+			startkl: $tidsplan_inndata.startkl,
 			laeringsmaal: laeringsmaal,
+			varighet: kumulativVarighet,
 			tidsplan: nyTidsplan
 		});
+		totalVarighet = kumulativVarighet;
+		combinedTextarea = lagKombinertTekstfelt();
 	};
+
+	const lagreRaadata = () => {
+		const raadataArray = combinedTextarea.split('\n');
+		const laeringsmaalIndex = raadataArray.indexOf('læringsmål:');
+		const tidsplanIndex = raadataArray.indexOf('tidsplan:');
+		const raadataTidsplanArray = raadataArray.slice(tidsplanIndex + 1, raadataArray.length - 1);
+		let nyTidsplan = [];
+		let kumulativVarighet = 0;
+		for (let i = 0; i < raadataTidsplanArray.length; i++) {
+			const element = raadataTidsplanArray[i];
+			const id = i + 1;
+			const [varighet, ...innholdArray] = element.split(' ');
+			nyTidsplan.push({
+				id: String(id),
+				varighet: Number(varighet),
+				innhold: innholdArray.join(' ')
+			});
+			kumulativVarighet += Number(varighet);
+		}
+		tidsplan_inndata.set({
+			tema: raadataArray[0].slice(6),
+			startkl: raadataArray[1].slice(9),
+			laeringsmaal: raadataArray.slice(laeringsmaalIndex + 1, tidsplanIndex),
+			varighet: kumulativVarighet,
+			tidsplan: nyTidsplan
+		});
+		totalVarighet = kumulativVarighet;
+		placeHolderLaeringsmaal = formaterLaeringsmaal($tidsplan_inndata.laeringsmaal);
+		placeHolderTema = $tidsplan_inndata.tema;
+		placeHolderStart = $tidsplan_inndata.startkl;
+		placeHolderTidsplan = formaterTidsplan($tidsplan_inndata.tidsplan);
+	};
+
+	let combinedTextarea = lagKombinertTekstfelt();
 </script>
 
 <head>
@@ -116,7 +115,7 @@
 	<textarea
 		name="laeringsmaal"
 		cols="50"
-		rows="5"
+		rows="3"
 		placeholder="Det første læringsmålet"
 		bind:value={placeHolderLaeringsmaal}
 	/>
@@ -126,25 +125,26 @@
 	<input type="time" name="starttid" bind:value={placeHolderStart} />
 	<br />
 
-	<label for="sluttid">Sluttid for undervisningsøkta:</label>
-	<input type="time" name="sluttid" bind:value={placeHolderSlutt} />
-	<br />
-
 	<label for="tidsplan">Tidsplan:</label>
 	<textarea
 		name="tidsplan"
 		id="tidsplan"
 		cols="50"
-		rows="10"
+		rows="8"
 		placeholder="15 Intro"
 		bind:value={placeHolderTidsplan}
 	/>
-	<button type="button" on:click={saveTidsplan}>Legg inn!</button>
-	<a href="vis-tidsplan">Vis tidsplan</a>
+	<button type="button" on:click={lagreTidsplan} name="submit tidsplan">Legg inn tidsplan!</button>
+	<p><a href="vis-tidsplan">Vis tidsplan</a></p>
+	<p>Total varighet: {totalVarighet} minutter.</p>
 
 	<label for="rawData">Rådata</label>
-	<textarea name="rawData" id="rawData" cols="30" rows="30" bind:value={combinedTextarea} />
+	<textarea name="rawData" id="rawData" cols="30" rows="15" bind:value={combinedTextarea} />
+	<button type="submit" name="submit rådata" on:click={lagreRaadata}
+		>Legg inn tidsplan fra rådata!</button
+	>
 </div>
+<div id="scrollbar" />
 
 <style>
 	:global(html) {
@@ -180,5 +180,12 @@
 	}
 	label {
 		margin-top: 1rem 0;
+	}
+	div#scrollbar {
+		visibility: hidden;
+		position: absolute;
+		z-index: 1;
+		bottom: -10rem;
+		overflow: hidden;
 	}
 </style>

@@ -1,6 +1,8 @@
 <script>
 	import { browser } from '$app/environment';
 	import { tidsplan_inndata } from '../../stores';
+	import { spring } from 'svelte/motion';
+	let coords = spring({ x: 50, y: 50 });
 
 	const colors = [
 		'e0c3fc',
@@ -14,24 +16,28 @@
 		'8187dc',
 		'757bc8'
 	];
+	const beregnKumulativ = () => {
+		let result = [0];
+		for (let i = 0; i < $tidsplan_inndata.tidsplan.length; i++) {
+			const element = $tidsplan_inndata.tidsplan[i].varighet;
+			result.push(result[i] + element);
+		}
+		return result;
+	};
+	let kumulativVarighet = beregnKumulativ();
 
 	let myStart = new Date();
-	myStart.setHours(Number($tidsplan_inndata.tidsplan[0].startkl.slice(0, 2)));
-	myStart.setMinutes(Number($tidsplan_inndata.tidsplan[0].startkl.slice(3, 5)));
+	myStart.setHours(Number($tidsplan_inndata.startkl.slice(0, 2)));
+	myStart.setMinutes(Number($tidsplan_inndata.startkl.slice(3, 5)));
 	myStart.setSeconds(0);
 
-	let end = new Date();
-	end.setHours(
-		Number($tidsplan_inndata.tidsplan[$tidsplan_inndata.tidsplan.length - 1].sluttkl.slice(0, 2))
+	let end = new Date(
+		myStart.getTime() + kumulativVarighet[kumulativVarighet.length - 1] * 60 * 1000
 	);
-	end.setMinutes(
-		Number($tidsplan_inndata.tidsplan[$tidsplan_inndata.tidsplan.length - 1].sluttkl.slice(3, 5))
-	);
-	end.setSeconds(0);
 
 	setInterval(() => {
 		if (browser) {
-			let height = document.querySelector('#tidsplan').offsetHeight;
+			let height = document.getElementById('tidsplan').offsetHeight;
 
 			document.getElementById('scrollbar').style.marginTop =
 				getPositionOfScrollbar(height, myStart, end) + 'px';
@@ -47,6 +53,37 @@
 			return Math.round(amountDone * tidsplanHeight);
 		}
 	}
+	const resizeBoxes = (boxId) => {
+		const windowWidth = window.innerWidth;
+		console.log('Pressed mouse on ' + boxId + ' at coords' + $coords.x + 'x' + $coords.y);
+		// if (boxId < $tidsplan_inndata.tidsplan.length) {
+		// 	if (
+		// 		Math.abs($coords.y - document.getElementById(Number(boxId) + 1).offsetTop) < 12 ||
+		// 		Math.abs($coords.y - document.getElementById(boxId).offsetTop) < 12
+		// 	) {
+		// 		console.log('På linja mellom to bokser');
+		// 		if (browser) {
+		// 			let tidsplanHeight = document.getElementById('tidsplan').offsetHeight;
+		// 		}
+		// 		let currentBoxHeight = document.getElementById(boxId).offsetHeight;
+		// 		let nextBoxHeight = document.getElementById(Number(boxId) + 1).offsetHeight;
+		// 		document.getElementById(boxId).style.flex = 4;
+		// 	}
+		let nyTidsplan = $tidsplan_inndata.tidsplan;
+		if ($coords.x > windowWidth / 2) {
+			nyTidsplan[boxId - 1].varighet += 1;
+		} else {
+			nyTidsplan[boxId - 1].varighet -= 1;
+		}
+		tidsplan_inndata.set({
+			tema: $tidsplan_inndata.tema,
+			startkl: $tidsplan_inndata.startkl,
+			laeringsmaal: $tidsplan_inndata.laeringsmaal,
+			varighet: $tidsplan_inndata.varighet,
+			tidsplan: nyTidsplan
+		});
+		kumulativVarighet = beregnKumulativ();
+	};
 </script>
 
 <head>
@@ -72,12 +109,23 @@
 	<div id="tidsplan">
 		<div id="scrollbar">&nbsp;</div>
 		{#each $tidsplan_inndata.tidsplan as undervisningsbolk, i}
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
 				id={undervisningsbolk.id}
 				class="bolk"
-				style="flex: {undervisningsbolk.andel}; background-color: #{colors[i % colors.length]};"
+				style="flex: {Math.round(
+					(undervisningsbolk.varighet / $tidsplan_inndata.varighet) * 100
+				)}; background-color: #{colors[i % colors.length]};"
+				on:mousemove={(e) => {
+					coords.set({ x: e.clientX, y: e.clientY });
+				}}
+				on:mousedown={resizeBoxes(undervisningsbolk.id)}
 			>
-				{undervisningsbolk.startkl}
+				{('0' + new Date(myStart.getTime() + kumulativVarighet[i] * 60 * 1000).getHours()).slice(
+					-2
+				)}:{(
+					'0' + new Date(myStart.getTime() + kumulativVarighet[i] * 60 * 1000).getMinutes()
+				).slice(-2)}
 				{undervisningsbolk.innhold}
 			</div>
 		{/each}
@@ -122,6 +170,13 @@
 		z-index: 0;
 		min-height: 2rem;
 		padding: 0.5rem;
+		user-select: none;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 	div#scrollbar {
 		z-index: 1;
