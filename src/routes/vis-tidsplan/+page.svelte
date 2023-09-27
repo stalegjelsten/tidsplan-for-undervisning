@@ -31,7 +31,7 @@
 	myStart.setMinutes(Number($tidsplan_inndata.startkl.slice(3, 5)));
 	myStart.setSeconds(0);
 
-	let end = new Date(
+	$: end = new Date(
 		myStart.getTime() + kumulativVarighet[kumulativVarighet.length - 1] * 60 * 1000
 	);
 
@@ -40,7 +40,22 @@
 			let height = document.getElementById('tidsplan').offsetHeight;
 
 			document.getElementById('scrollbar').style.marginTop =
-				getPositionOfScrollbar(height, myStart, end) + 'px';
+				getPositionOfScrollbar(height, myStart, end) - 10 + 'px';
+			//TODO: if scrollbar is on top of another div: make that div stand out.
+			// offsetTop is probably the wrong property.
+			for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
+				const element = document.getElementById(String(i + 1));
+				const boxY = element.offsetTop;
+				const nextBoxY = document.getElementById(String(i + 2)).offsetTop;
+				const scrollbarY = document.getElementById('scrollbar').offsetTop;
+				if (scrollbarY + 5 > boxY && scrollbarY < nextBoxY) {
+					document.getElementById(i + 1).style.fontWeight = '700';
+					document.getElementById(i + 1).style.filter = 'brightness(1.1)';
+				} else {
+					document.getElementById(i + 1).style.fontWeight = '400';
+					document.getElementById(i + 1).style.filter = 'brightness(1)';
+				}
+			}
 		}
 	}, 1000);
 
@@ -75,14 +90,14 @@
 		} else {
 			nyTidsplan[boxId - 1].varighet -= 1;
 		}
+		kumulativVarighet = beregnKumulativ();
 		tidsplan_inndata.set({
 			tema: $tidsplan_inndata.tema,
 			startkl: $tidsplan_inndata.startkl,
 			laeringsmaal: $tidsplan_inndata.laeringsmaal,
-			varighet: $tidsplan_inndata.varighet,
+			varighet: kumulativVarighet[kumulativVarighet.length - 1],
 			tidsplan: nyTidsplan
 		});
-		kumulativVarighet = beregnKumulativ();
 	};
 </script>
 
@@ -161,7 +176,7 @@
 		font-size: 200%;
 	}
 	h1 {
-		padding: 0.5rem;
+		padding: 1rem;
 		font-size: 150%;
 	}
 	#laeringsmaal ul {
@@ -177,16 +192,22 @@
 		flex: 0 1 auto;
 	}
 	#container #tidsplan {
+		overflow: hidden;
 		z-index: 0;
 		flex: 1 1 auto;
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+		/* gap: 0.35rem; */
 	}
 	.bolk {
+		width: 95%;
 		z-index: 0;
+		border: 2px solid black;
 		min-height: 2rem;
 		padding: 0.5rem;
 		user-select: none;
+		border-radius: 1rem;
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
 		-khtml-user-select: none;
@@ -206,6 +227,7 @@
 		position: absolute;
 		width: 100%;
 		height: 1rem;
+		font-weight: 400;
 		background-color: rgba(255, 0, 0, 0.5);
 		visibility: hidden;
 	}
