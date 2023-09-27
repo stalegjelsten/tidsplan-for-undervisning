@@ -67,7 +67,7 @@
 		const raadataArray = combinedTextarea.split('\n');
 		const laeringsmaalIndex = raadataArray.indexOf('læringsmål:');
 		const tidsplanIndex = raadataArray.indexOf('tidsplan:');
-		const raadataTidsplanArray = raadataArray.slice(tidsplanIndex + 1, raadataArray.length - 1);
+		const raadataTidsplanArray = raadataArray.slice(tidsplanIndex + 1, raadataArray.length);
 		let nyTidsplan = [];
 		let kumulativVarighet = 0;
 		for (let i = 0; i < raadataTidsplanArray.length; i++) {
