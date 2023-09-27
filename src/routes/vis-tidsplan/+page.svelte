@@ -1,8 +1,8 @@
 <script>
 	import { browser } from '$app/environment';
 	import { tidsplan_inndata } from '../../stores';
-	import { spring } from 'svelte/motion';
-	let coords = spring({ x: 50, y: 50 });
+	import { writable } from 'svelte/store';
+	let coords = writable({ x: 50, y: 50 });
 
 	const colors = [
 		'e0c3fc',
@@ -40,7 +40,7 @@
 			let height = document.getElementById('tidsplan').offsetHeight;
 
 			document.getElementById('scrollbar').style.marginTop =
-				getPositionOfScrollbar(height, myStart, end) + 'px';
+				getPositionOfScrollbar(height, myStart, end) - 5 + 'px';
 			//TODO: if scrollbar is on top of another div: make that div stand out.
 			// offsetTop is probably the wrong property.
 			for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
@@ -48,7 +48,10 @@
 				const boxY = element.offsetTop;
 				const nextBoxY = document.getElementById(String(i + 2)).offsetTop;
 				const scrollbarY = document.getElementById('scrollbar').offsetTop;
-				if (scrollbarY + 5 > boxY && scrollbarY < nextBoxY) {
+				if (
+					(scrollbarY + 5 > boxY && scrollbarY < nextBoxY) ||
+					(i == $tidsplan_inndata.tidsplan.length - 1 && scrollbarY + 5 > boxY)
+				) {
 					document.getElementById(i + 1).style.fontWeight = '700';
 					document.getElementById(i + 1).style.filter = 'brightness(1.1)';
 					document.getElementById(i + 1).style.width = 'calc(100vw - 1.8rem)';
@@ -67,7 +70,20 @@
 			// shows the scrollbar if the lesson is in progress
 			const amountDone = (now - startTime) / (endTime - startTime);
 			document.getElementById('scrollbar').style.visibility = 'visible';
-			return Math.round(amountDone * tidsplanHeight);
+
+			// finn ut hvor mange bolker som er ferdige og legg til ekstra offset pga borders
+			let borderOffset = -2;
+			const minutesSinceStart = Math.round((now.getTime() - startTime.getTime()) / 60 / 1000);
+			for (let index = 0; index < kumulativVarighet.length; index++) {
+				const element = kumulativVarighet[index];
+				if (element < minutesSinceStart) {
+					borderOffset += 4;
+				}
+			}
+
+			return Math.round(amountDone * tidsplanHeight) + borderOffset;
+		} else if (now > endTime && browser) {
+			document.getElementById('scrollbar').style.visibility = 'hidden';
 		}
 	}
 	const resizeBoxes = (boxId) => {
@@ -138,7 +154,7 @@
 				id={undervisningsbolk.id}
 				class="bolk"
 				style="flex: {Math.round(
-					(undervisningsbolk.varighet / $tidsplan_inndata.varighet) * 100
+					(undervisningsbolk.varighet / $tidsplan_inndata.varighet) * 1000
 				)}; background-color: #{colors[i % colors.length]};"
 				on:mousemove={(e) => {
 					coords.set({ x: e.clientX, y: e.clientY });
@@ -224,6 +240,7 @@
 
 	div#scrollbar {
 		z-index: 1;
+		overflow: hidden;
 		position: absolute;
 		width: 100%;
 		height: 1rem;
