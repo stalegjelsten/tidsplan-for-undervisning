@@ -97,7 +97,7 @@
 
 <div id="container">
 	<div id="laeringsmaal">
-		<h1>{$tidsplan_inndata.tema}</h1>
+		<h1><a href="legg-tidsplan">{$tidsplan_inndata.tema}</a></h1>
 		<ul>
 			{#each $tidsplan_inndata.laeringsmaal as maal}
 				<li>{maal}</li>
@@ -105,7 +105,23 @@
 		</ul>
 	</div>
 
-	<h1>Tidsplan</h1>
+	<h1>
+		Tidsplan {(
+			'0' + new Date(myStart.getTime() + kumulativVarighet[0] * 60 * 1000).getHours()
+		).slice(-2)}:{(
+			'0' + new Date(myStart.getTime() + kumulativVarighet[0] * 60 * 1000).getMinutes()
+		).slice(-2)}–{(
+			'0' +
+			new Date(
+				myStart.getTime() + kumulativVarighet[kumulativVarighet.length - 1] * 60 * 1000
+			).getHours()
+		).slice(-2)}:{(
+			'0' +
+			new Date(
+				myStart.getTime() + kumulativVarighet[kumulativVarighet.length - 1] * 60 * 1000
+			).getMinutes()
+		).slice(-2)}
+	</h1>
 	<div id="tidsplan">
 		<div id="scrollbar">&nbsp;</div>
 		{#each $tidsplan_inndata.tidsplan as undervisningsbolk, i}
@@ -177,7 +193,14 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
+		transition: all 0.3s ease-in-out;
 	}
+
+	.bolk:hover {
+		color: rgb(80, 40, 40);
+		filter: brightness(1.05) saturate(1.3);
+	}
+
 	div#scrollbar {
 		z-index: 1;
 		position: absolute;
@@ -185,5 +208,15 @@
 		height: 1rem;
 		background-color: rgba(255, 0, 0, 0.5);
 		visibility: hidden;
+	}
+	a {
+		color: black;
+		text-decoration: none;
+		transition: all 0.1s ease-in-out;
+	}
+
+	a:hover {
+		color: darkred;
+		text-decoration: underline;
 	}
 </style>
