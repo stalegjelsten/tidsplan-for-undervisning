@@ -54,7 +54,7 @@
 		}
 		tidsplan_inndata.set({
 			tema: placeHolderTema,
-			startkl: $tidsplan_inndata.startkl,
+			startkl: placeHolderStart,
 			laeringsmaal: laeringsmaal,
 			varighet: kumulativVarighet,
 			tidsplan: nyTidsplan

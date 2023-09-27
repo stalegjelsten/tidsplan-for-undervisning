@@ -40,7 +40,7 @@
 			let height = document.getElementById('tidsplan').offsetHeight;
 
 			document.getElementById('scrollbar').style.marginTop =
-				getPositionOfScrollbar(height, myStart, end) - 10 + 'px';
+				getPositionOfScrollbar(height, myStart, end) - 20 + 'px';
 			//TODO: if scrollbar is on top of another div: make that div stand out.
 			// offsetTop is probably the wrong property.
 			for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
