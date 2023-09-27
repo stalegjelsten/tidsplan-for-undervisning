@@ -183,6 +183,13 @@
 		border: 1px solid #ccc;
 		border-radius: 4px;
 		box-sizing: border-box;
+		transition: all 0.1s eas;
+	}
+	button:hover {
+		transform: scale(1.02);
+	}
+	button:active {
+		transform: translateX(0.2rem) translateY(0.2rem);
 	}
 	label {
 		margin-top: 1rem 0;

@@ -40,7 +40,7 @@
 			let height = document.getElementById('tidsplan').offsetHeight;
 
 			document.getElementById('scrollbar').style.marginTop =
-				getPositionOfScrollbar(height, myStart, end) - 20 + 'px';
+				getPositionOfScrollbar(height, myStart, end) + 'px';
 			//TODO: if scrollbar is on top of another div: make that div stand out.
 			// offsetTop is probably the wrong property.
 			for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
@@ -51,9 +51,11 @@
 				if (scrollbarY + 5 > boxY && scrollbarY < nextBoxY) {
 					document.getElementById(i + 1).style.fontWeight = '700';
 					document.getElementById(i + 1).style.filter = 'brightness(1.1)';
+					document.getElementById(i + 1).style.width = 'calc(100vw - 1.8rem)';
 				} else {
 					document.getElementById(i + 1).style.fontWeight = '400';
 					document.getElementById(i + 1).style.filter = 'brightness(1)';
+					document.getElementById(i + 1).style.width = 'calc(100vw - 2rem)';
 				}
 			}
 		}
@@ -181,11 +183,13 @@
 		font-size: 200%;
 	}
 	h1 {
-		padding: 1rem;
-		font-size: 150%;
+		/* padding: 1rem 1rem 0 1rem; */
+		font-size: 120%;
+		margin: 1rem 0.5rem 0 0.5rem;
 	}
 	#laeringsmaal ul {
 		margin: 0;
+		padding: 0 4rem;
 	}
 	div#container {
 		display: flex;
@@ -206,7 +210,7 @@
 		/* gap: 0.35rem; */
 	}
 	.bolk {
-		width: 95%;
+		width: calc(100vw - 2rem);
 		z-index: 0;
 		border: 2px solid black;
 		min-height: 2rem;
