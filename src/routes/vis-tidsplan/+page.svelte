@@ -219,9 +219,10 @@
 	.bolk {
 		width: calc(100vw - 2rem);
 		z-index: 0;
+		font-size: clamp(1.8rem, 3.5vh, 2.5rem);
 		border: 2px solid black;
-		min-height: 2rem;
-		padding: 0.5rem;
+		/* min-height: 2rem; */
+		padding: 0.5vh;
 		user-select: none;
 		border-radius: 1rem;
 		-webkit-touch-callout: none;
@@ -230,6 +231,7 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
+		overflow: hidden;
 		transition: all 0.3s ease-in-out;
 	}
 
