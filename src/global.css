@@ -1,0 +1,12 @@
+html {
+		height: 100%;
+		margin: 0;
+		font-size: 62.5%;
+}
+body {
+		height: 100%;
+		margin: 0;
+		font-family: 'Atkinson Hyperlegible', 'Josefin Sans', Arial, Helvetica, sans-serif;
+		font-size: 200%;
+}
+

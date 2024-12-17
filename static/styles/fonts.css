@@ -3,3 +3,7 @@
     src: url("/fonts/JosefinSans-VariableFont_wght.ttf") format("truetype"),
         url("/fonts/JosefinSans-Italic-VariableFont_wght.ttf") format("truetype");
 }
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: local("Atkinson Hyperlegible"), url("/fonts/AtkinsonHyperlegible-Regular.ttf") format("truetype"), url("/fonts/AtkinsonHyperlegible-Bold.ttf") format("truetype");
+}

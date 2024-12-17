@@ -16,6 +16,7 @@
 		'8187dc',
 		'757bc8'
 	];
+
 	const beregnKumulativ = () => {
 		let result = [0];
 		for (let i = 0; i < $tidsplan_inndata.tidsplan.length; i++) {
@@ -39,18 +40,27 @@
 		if (browser) {
 			let height = document.getElementById('tidsplan').offsetHeight;
 
+      let now = new Date();
+
+      if (document.getElementById('scrollbar')) {
+
 			document.getElementById('scrollbar').style.marginTop =
 				getPositionOfScrollbar(height, myStart, end) - 5 + 'px';
 			//TODO: if scrollbar is on top of another div: make that div stand out.
-			// offsetTop is probably the wrong property.
+			// offsetTop is probably the wrong propertya.
+      }
+
+      
+
 			for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
 				const element = document.getElementById(String(i + 1));
 				const boxY = element.offsetTop;
 				const nextBoxY = document.getElementById(String(i + 2)).offsetTop;
 				const scrollbarY = document.getElementById('scrollbar').offsetTop;
+        const boldOffset = 5;
 				if (
-					(scrollbarY + 5 > boxY && scrollbarY < nextBoxY) ||
-					(i == $tidsplan_inndata.tidsplan.length - 1 && scrollbarY + 5 > boxY)
+					(scrollbarY + boldOffset > boxY && scrollbarY < nextBoxY) ||
+					(i == $tidsplan_inndata.tidsplan.length - 1 && scrollbarY + boldOffset > boxY)
 				) {
 					document.getElementById(i + 1).style.fontWeight = '700';
 					document.getElementById(i + 1).style.filter = 'brightness(1.1)';
@@ -69,21 +79,22 @@
 		if (now < endTime && now > startTime && browser) {
 			// shows the scrollbar if the lesson is in progress
 			const amountDone = (now - startTime) / (endTime - startTime);
+      //console.log(amountDone)
 			document.getElementById('scrollbar').style.visibility = 'visible';
 
 			// finn ut hvor mange bolker som er ferdige og legg til ekstra offset pga borders
 			let borderOffset = -2;
 			const minutesSinceStart = Math.round((now.getTime() - startTime.getTime()) / 60 / 1000);
-			for (let index = 0; index < kumulativVarighet.length; index++) {
-				const element = kumulativVarighet[index];
-				if (element < minutesSinceStart) {
-					borderOffset += 4;
-				}
-			}
+			//for (let index = 0; index < kumulativVarighet.length; index++) {
+			//	const element = kumulativVarighet[index];
+			//	if (element < minutesSinceStart) {
+			//		borderOffset += 3;
+			//	}
+			//}
 
 			return Math.round(amountDone * tidsplanHeight) + borderOffset;
-		} else if (now > endTime && browser) {
-			document.getElementById('scrollbar').style.visibility = 'hidden';
+/*		} else if (now > endTime && browser) {
+			document.getElementById('scrollbar').style.visibility = 'hidden'; */
 		}
 	}
 	const resizeBoxes = (boxId) => {
@@ -108,6 +119,10 @@
 		} else {
 			nyTidsplan[boxId - 1].varighet -= 1;
 		}
+
+    //if (nyTidsplan[boxId - 1].varighet < 1) {
+    //  nyTidsplan.splice(boxId - 1, 1)
+    //}
 		kumulativVarighet = beregnKumulativ();
 		tidsplan_inndata.set({
 			tema: $tidsplan_inndata.tema,
@@ -173,22 +188,6 @@
 </div>
 
 <style>
-	@font-face {
-		font-family: 'Josefin Sans';
-		src: local('fonts/JosefinSans-VariableFont_wght.ttf'),
-			local('fonts/JosefinSans-Italic-VariableFont_wght.ttf');
-	}
-	:global(html) {
-		height: 100%;
-		margin: 0;
-		font-size: 62.5%;
-	}
-	:global(body) {
-		height: 100%;
-		margin: 0;
-		font-family: 'Josefin Sans', Arial, Helvetica, sans-serif;
-		font-size: 200%;
-	}
 	h1 {
 		/* padding: 1rem 1rem 0 1rem; */
 		font-size: 120%;
@@ -220,7 +219,7 @@
 		width: calc(100vw - 2rem);
 		z-index: 0;
 		font-size: clamp(1.8rem, 3.5vh, 2.5rem);
-		border: 2px solid black;
+		outline: 2px solid black;
 		/* min-height: 2rem; */
 		padding: 0.5vh;
 		user-select: none;
@@ -247,9 +246,10 @@
 		width: 100%;
 		height: 1rem;
 		font-weight: 400;
-		background-color: rgba(255, 0, 0, 0.5);
+		background-color: rgba(242, 68, 255, 0.3);
 		visibility: hidden;
 	}
+
 	a {
 		color: black;
 		text-decoration: none;

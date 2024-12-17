@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 export const tidsplan_inndata = writable({
 	tema: 'Derivasjon',
 	laeringsmaal: ['repetere derivasjonsreglene', 'utforske sammensatte funksjoner'],
-	startkl: '08:15',
+	startkl: '19:15',
 	varighet: 92,
 	tidsplan: [
 		{

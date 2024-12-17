@@ -138,22 +138,6 @@
 <div id="scrollbar" />
 
 <style>
-	@font-face {
-		font-family: 'Josefin Sans';
-		src: local('fonts/JosefinSans-VariableFont_wght.ttf'),
-			local('fonts/JosefinSans-Italic-VariableFont_wght.ttf');
-	}
-	:global(html) {
-		height: 100%;
-		margin: 0;
-		font-size: 62.5%;
-	}
-	:global(body) {
-		height: 100%;
-		margin: 0;
-		font-family: 'Josefin Sans', Arial, Helvetica, sans-serif;
-		font-size: 200%;
-	}
 	h1 {
 		padding: 0.5rem;
 		font-size: 150%;
