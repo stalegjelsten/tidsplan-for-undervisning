@@ -2,6 +2,8 @@
 	import { browser } from '$app/environment';
 	import { tidsplan_inndata } from '../../stores';
 	import { writable } from 'svelte/store';
+	import { onMount, onDestroy } from 'svelte';
+
 	let coords = writable({ x: 50, y: 50 });
 
 	const colors = [
@@ -36,50 +38,62 @@
 		myStart.getTime() + kumulativVarighet[kumulativVarighet.length - 1] * 60 * 1000
 	);
 
-	setInterval(() => {
-		if (browser) {
-			let height = document.getElementById('tidsplan').offsetHeight;
+	let intervalId;
 
-      let now = new Date();
+	onMount(() => {
+		intervalId = setInterval(() => {
+			if (browser) {
+				let height = document.getElementById('tidsplan').offsetHeight;
 
-      if (document.getElementById('scrollbar')) {
+				let now = new Date();
 
-			document.getElementById('scrollbar').style.marginTop =
-				getPositionOfScrollbar(height, myStart, end) - 5 + 'px';
-			//TODO: if scrollbar is on top of another div: make that div stand out.
-			// offsetTop is probably the wrong propertya.
-      }
+				if (document.getElementById('scrollbar')) {
+					//console.log('myStart ' + myStart + '. End: ' + end + '. Now: ' + now);
 
-      
+					document.getElementById('scrollbar').style.marginTop =
+						getPositionOfScrollbar(height, myStart, end) - 5 + 'px';
+					//TODO: if scrollbar is on top of another div: make that div stand out.
+					// offsetTop is probably the wrong propertya.
+				}
 
-			for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
-				const element = document.getElementById(String(i + 1));
-				const boxY = element.offsetTop;
-				const nextBoxY = document.getElementById(String(i + 2)).offsetTop;
-				const scrollbarY = document.getElementById('scrollbar').offsetTop;
-        const boldOffset = 5;
-				if (
-					(scrollbarY + boldOffset > boxY && scrollbarY < nextBoxY) ||
-					(i == $tidsplan_inndata.tidsplan.length - 1 && scrollbarY + boldOffset > boxY)
-				) {
-					document.getElementById(i + 1).style.fontWeight = '700';
-					document.getElementById(i + 1).style.filter = 'brightness(1.1)';
-					document.getElementById(i + 1).style.width = 'calc(100vw - 1.8rem)';
-				} else {
-					document.getElementById(i + 1).style.fontWeight = '400';
-					document.getElementById(i + 1).style.filter = 'brightness(1)';
-					document.getElementById(i + 1).style.width = 'calc(100vw - 2rem)';
+				for (let i = 0; i < $tidsplan_inndata.tidsplan.length - 1; i++) {
+					const element = document.getElementById('bolk' + String(i + 1));
+					const boxY = element.offsetTop;
+					const nextBoxY = document.getElementById('bolk' + String(i + 2)).offsetTop;
+					const scrollbarY = document.getElementById('scrollbar').offsetTop;
+					const boldOffset = 5;
+					if (
+						(scrollbarY + boldOffset > boxY && scrollbarY < nextBoxY) ||
+						(i == $tidsplan_inndata.tidsplan.length - 1 && scrollbarY + boldOffset > boxY)
+					) {
+						document.getElementById('bolk' + (i + 1)).style.fontWeight = '700';
+						document.querySelector('#bolk' + (i + 1) + ' .bolkinnhold').style.fontSize = '135%';
+						document.querySelector('#bolk' + (i + 1) + ' .bolkinnhold').style.marginTop =
+							'-0.35rem';
+						document.getElementById('bolk' + (i + 1)).style.filter = 'brightness(1.1)';
+						document.getElementById('bolk' + (i + 1)).style.width = 'calc(100vw - 1.8rem)';
+					} else {
+						document.getElementById('bolk' + (i + 1)).style.fontWeight = '400';
+						document.getElementById('bolk' + (i + 1)).style.filter = 'brightness(1)';
+						document.getElementById('bolk' + (i + 1)).style.width = 'calc(100vw - 2rem)';
+						document.querySelector('#bolk' + (i + 1) + ' .bolkinnhold').style.fontSize = '100%';
+						document.querySelector('#bolk' + (i + 1) + ' .bolkinnhold').style.marginTop = '0';
+					}
 				}
 			}
-		}
-	}, 1000);
+		}, 1000);
+	});
+
+	onDestroy(() => {
+		clearInterval(intervalId);
+	});
 
 	function getPositionOfScrollbar(tidsplanHeight, startTime, endTime) {
 		let now = new Date();
 		if (now < endTime && now > startTime && browser) {
 			// shows the scrollbar if the lesson is in progress
 			const amountDone = (now - startTime) / (endTime - startTime);
-      //console.log(amountDone)
+			//console.log(amountDone)
 			document.getElementById('scrollbar').style.visibility = 'visible';
 
 			// finn ut hvor mange bolker som er ferdige og legg til ekstra offset pga borders
@@ -93,7 +107,7 @@
 			//}
 
 			return Math.round(amountDone * tidsplanHeight) + borderOffset;
-/*		} else if (now > endTime && browser) {
+			/*		} else if (now > endTime && browser) {
 			document.getElementById('scrollbar').style.visibility = 'hidden'; */
 		}
 	}
@@ -120,16 +134,17 @@
 			nyTidsplan[boxId - 1].varighet -= 1;
 		}
 
-    //if (nyTidsplan[boxId - 1].varighet < 1) {
-    //  nyTidsplan.splice(boxId - 1, 1)
-    //}
+		//if (nyTidsplan[boxId - 1].varighet < 1) {
+		//  nyTidsplan.splice(boxId - 1, 1)
+		//}
 		kumulativVarighet = beregnKumulativ();
 		tidsplan_inndata.set({
 			tema: $tidsplan_inndata.tema,
 			startkl: $tidsplan_inndata.startkl,
 			laeringsmaal: $tidsplan_inndata.laeringsmaal,
 			varighet: kumulativVarighet[kumulativVarighet.length - 1],
-			tidsplan: nyTidsplan
+			tidsplan: nyTidsplan,
+			visTidsLinjal: true
 		});
 	};
 </script>
@@ -166,7 +181,7 @@
 		{#each $tidsplan_inndata.tidsplan as undervisningsbolk, i}
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
-				id={undervisningsbolk.id}
+				id="bolk{undervisningsbolk.id}"
 				class="bolk"
 				style="flex: {Math.round(
 					(undervisningsbolk.varighet / $tidsplan_inndata.varighet) * 1000
@@ -176,12 +191,16 @@
 				}}
 				on:mousedown={resizeBoxes(undervisningsbolk.id)}
 			>
-				{('0' + new Date(myStart.getTime() + kumulativVarighet[i] * 60 * 1000).getHours()).slice(
-					-2
-				)}:{(
-					'0' + new Date(myStart.getTime() + kumulativVarighet[i] * 60 * 1000).getMinutes()
-				).slice(-2)}
-				{undervisningsbolk.innhold}
+				<div class="tidspunkt">
+					{('0' + new Date(myStart.getTime() + kumulativVarighet[i] * 60 * 1000).getHours()).slice(
+						-2
+					)}:{(
+						'0' + new Date(myStart.getTime() + kumulativVarighet[i] * 60 * 1000).getMinutes()
+					).slice(-2)}
+				</div>
+				<div class="bolkinnhold">
+					{undervisningsbolk.innhold}
+				</div>
 			</div>
 		{/each}
 	</div>
@@ -224,6 +243,9 @@
 		padding: 0.5vh;
 		user-select: none;
 		border-radius: 1rem;
+		display: flex;
+		gap: 1rem;
+		flex-direction: row;
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
 		-khtml-user-select: none;

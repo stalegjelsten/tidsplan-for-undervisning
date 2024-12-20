@@ -28,5 +28,6 @@ export const tidsplan_inndata = writable({
 			innhold: 'Utforsk sammensatte funksjoner s. 65'
 		},
 		{ id: '6', varighet: 2, innhold: 'Leksearbeid' }
-	]
+	],
+  visTidsLinjal: true
 });

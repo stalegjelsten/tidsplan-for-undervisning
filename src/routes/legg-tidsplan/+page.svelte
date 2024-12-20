@@ -24,6 +24,7 @@
 	let placeHolderTidsplan = formaterTidsplan($tidsplan_inndata.tidsplan);
 	let placeHolderTema = $tidsplan_inndata.tema;
 	let placeHolderStart = $tidsplan_inndata.startkl;
+  let placeHolderTidsLinjal = $tidsplan_inndata.visTidsLinjal;
 
 	const lagKombinertTekstfelt = () => {
 		return [
@@ -57,7 +58,8 @@
 			startkl: placeHolderStart,
 			laeringsmaal: laeringsmaal,
 			varighet: kumulativVarighet,
-			tidsplan: nyTidsplan
+			tidsplan: nyTidsplan,
+      visTidsLinjal: placeHolderTidsLinjal
 		});
 		totalVarighet = kumulativVarighet;
 		combinedTextarea = lagKombinertTekstfelt();
