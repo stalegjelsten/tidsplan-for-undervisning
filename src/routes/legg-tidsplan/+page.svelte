@@ -24,7 +24,7 @@
 	let placeHolderTidsplan = formaterTidsplan($tidsplan_inndata.tidsplan);
 	let placeHolderTema = $tidsplan_inndata.tema;
 	let placeHolderStart = $tidsplan_inndata.startkl;
-  let placeHolderTidsLinjal = $tidsplan_inndata.visTidsLinjal;
+	let placeHolderTidsLinjal = $tidsplan_inndata.visTidsLinjal;
 
 	const lagKombinertTekstfelt = () => {
 		return [
@@ -59,7 +59,7 @@
 			laeringsmaal: laeringsmaal,
 			varighet: kumulativVarighet,
 			tidsplan: nyTidsplan,
-      visTidsLinjal: placeHolderTidsLinjal
+			visTidsLinjal: placeHolderTidsLinjal
 		});
 		totalVarighet = kumulativVarighet;
 		combinedTextarea = lagKombinertTekstfelt();
@@ -111,7 +111,7 @@
 		rows="3"
 		placeholder="Det første læringsmålet"
 		bind:value={placeHolderLaeringsmaal}
-	/>
+	></textarea>
 	<br />
 
 	<label for="starttid">Starttid for undervisningsøkta:</label>
@@ -126,7 +126,7 @@
 		rows="8"
 		placeholder="15 Intro"
 		bind:value={placeHolderTidsplan}
-	/>
+	></textarea>
 	<button type="button" on:click={lagreTidsplan} name="submit tidsplan">Legg inn tidsplan!</button>
 	<p>Total varighet: {totalVarighet} minutter.</p>
 	<a href="vis-tidsplan"><button>Vis tidsplan</button></a>

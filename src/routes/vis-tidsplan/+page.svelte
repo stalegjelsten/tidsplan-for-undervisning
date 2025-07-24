@@ -189,7 +189,7 @@
 				on:mousemove={(e) => {
 					coords.set({ x: e.clientX, y: e.clientY });
 				}}
-				on:mousedown={resizeBoxes(undervisningsbolk.id)}
+				on:mousedown={() => {resizeBoxes(undervisningsbolk.id)}}
 			>
 				<div class="tidspunkt">
 					{('0' + new Date(myStart.getTime() + kumulativVarighet[i] * 60 * 1000).getHours()).slice(
